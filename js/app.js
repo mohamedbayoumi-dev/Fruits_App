@@ -16,6 +16,8 @@ const state = {
 // INITIALISATION
 // ─────────────────────────────────────────────
 
+const CITIES = citiesEntitySet.value.map((city) => city.Name);
+
 function init() {
   state.fruits = loadFruitsFromStorage();
   state.fruits.forEach((fruit) => {
@@ -34,17 +36,47 @@ function init() {
 }
 
 // ─────────────────────────────────────────────
+// getBaseFruitsFromOData
+// ─────────────────────────────────────────────
+
+
+function getBaseFruitsFromOData() {
+  return fruitsEntitySet.value.map((fruit) => ({
+    id: fruit.ID,
+    name: fruit.Name,
+    category: fruit.Category,
+    price: fruit.Price,
+    unit: fruit.Unit,
+    image: normalizeImagePath(fruit.Image),
+    description: fruit.Description,
+    type: fruit.Type,
+    supplierName: fruit.SupplierName,
+    suppliers: suppliersEntitySet.value
+      .filter((supplier) => supplier.FruitID === fruit.ID)
+      .map((supplier) => ({
+        id: supplier.ID,
+        supplierName: supplier.SupplierName,
+        sinceWhen: supplier.SinceWhen,
+        city: supplier.City,
+        contactPerson: supplier.ContactPerson,
+        phone: supplier.Phone,
+      })),
+  }));
+}
+
+// ─────────────────────────────────────────────
 // DATA PERSISTENCE (localStorage)
 // ─────────────────────────────────────────────
 
 function loadFruitsFromStorage() {
+  const baseFruits = getBaseFruitsFromOData();
   const saved = localStorage.getItem("fruitsAppData");
-  if (!saved) return deepClone(fruitsData);
+  if (!saved) return deepClone(baseFruits);
 
   try {
     const savedData = JSON.parse(saved);
 
-    const mergedBaseFruits = fruitsData.map((fruit) => {
+    const mergedBaseFruits = baseFruits.map((fruit) => {
       const savedFruit = savedData.find((f) => f.id === fruit.id);
       if (!savedFruit) return deepClone(fruit);
 
@@ -57,7 +89,7 @@ function loadFruitsFromStorage() {
     });
 
     const extraSavedFruits = savedData
-      .filter((savedFruit) => !fruitsData.some((fruit) => fruit.id === savedFruit.id))
+      .filter((savedFruit) => !baseFruits.some((fruit) => fruit.id === savedFruit.id))
       .map((fruit) => ({
         ...deepClone(fruit),
         image: normalizeImagePath(fruit.image),
@@ -66,7 +98,7 @@ function loadFruitsFromStorage() {
     return [...mergedBaseFruits, ...extraSavedFruits];
   } catch (e) {
     console.warn("Failed to parse localStorage data, using defaults.", e);
-    return deepClone(fruitsData);
+    return deepClone(baseFruits);
   }
 }
 

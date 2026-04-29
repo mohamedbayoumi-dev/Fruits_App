@@ -1,313 +1,330 @@
+const citiesEntitySet = {
+  value: [
+    { Name: "Cairo" },
+    { Name: "Alexandria" },
+    { Name: "Giza" },
+    { Name: "Mansoura" },
+    { Name: "Tanta" },
+    { Name: "Zagazig" },
+    { Name: "Ismailia" },
+    { Name: "Port Said" },
+    { Name: "Suez" },
+    { Name: "Fayoum" },
+    { Name: "Beni Suef" },
+    { Name: "Minya" },
+    { Name: "Assiut" },
+    { Name: "Sohag" },
+    { Name: "Aswan" }
+  ]
+};
 
-const CITIES = [
-  "Cairo", "Alexandria", "Giza", "Dubai", "Riyadh",
-  "Istanbul", "London", "Paris", "New York", "Tokyo",
-  "Barcelona", "Amsterdam", "Berlin", "Rome", "Sydney"
-];
+const fruitsEntitySet = {
+  value: [
+    {
+      ID: 1,
+      Name: "Apple",
+      Category: "Alkaline",
+      Price: 35,
+      Unit: "kg",
+      Image: "assets/image/Apple.avif",
+      Description: "Fresh Egyptian apples with a balanced sweet taste and crisp texture. Ideal for daily consumption and rich in fiber and vitamins.",
+      Type: "Pome Fruit",
+      SupplierName: "Delta Fresh Farms"
+    },
+    {
+      ID: 2,
+      Name: "Mango",
+      Category: "Acidic",
+      Price: 60,
+      Unit: "kg",
+      Image: "assets/image/Mango.jpg",
+      Description: "Premium Egyptian mangoes known for their rich flavor and juicy texture. Carefully selected from local farms during peak season.",
+      Type: "Drupe Fruit",
+      SupplierName: "Nile Mango Traders"
+    },
+    {
+      ID: 3,
+      Name: "Strawberry",
+      Category: "Acidic",
+      Price: 80,
+      Unit: "kg",
+      Image: "assets/image/Strawberry.webp",
+      Description: "Bright red strawberries grown in Egypt with a sweet aroma and soft juicy texture. Perfect for desserts and fresh eating.",
+      Type: "Aggregate Fruit",
+      SupplierName: "Berry Egypt"
+    },
+    {
+      ID: 4,
+      Name: "Watermelon",
+      Category: "Alkaline",
+      Price: 20,
+      Unit: "kg",
+      Image: "assets/image/Watermelon.jpg",
+      Description: "Large Egyptian watermelon with refreshing flavor and high water content. A popular summer fruit across local markets.",
+      Type: "Pepo Fruit",
+      SupplierName: "Nile Delta Produce"
+    },
+    {
+      ID: 5,
+      Name: "Grapes",
+      Category: "Acidic",
+      Price: 55,
+      Unit: "kg",
+      Image: "assets/image/Grapes.png",
+      Description: "Seedless Egyptian grapes with a sweet taste and crisp bite. Available in premium quality for local distribution.",
+      Type: "Berry Fruit",
+      SupplierName: "Upper Egypt Vineyards"
+    },
+    {
+      ID: 6,
+      Name: "Orange",
+      Category: "Acidic",
+      Price: 30,
+      Unit: "kg",
+      Image: "assets/image/Orange.jpg",
+      Description: "Egyptian oranges with high juice content and rich citrus flavor. Commonly supplied for fresh markets and juice production.",
+      Type: "Hesperidium Fruit",
+      SupplierName: "Citrus El Wadi"
+    },
+    {
+      ID: 7,
+      Name: "Banana",
+      Category: "Alkaline",
+      Price: 15,
+      Unit: "kg",
+      Image: "assets/image/Banana.jpg",
+      Description: "Naturally sweet bananas from Egyptian farms with soft texture and reliable quality. Suitable for daily sale and home use.",
+      Type: "Berry Fruit",
+      SupplierName: "Banana El Kheir"
+    },
+    {
+      ID: 8,
+      Name: "Pineapple",
+      Category: "Acidic",
+      Price: 45,
+      Unit: "kg",
+      Image: "assets/image/Pineapple.webp",
+      Description: "Selected pineapple with a tropical flavor and balanced sweetness. Distributed locally through premium fruit suppliers.",
+      Type: "Multiple Fruit",
+      SupplierName: "Tropical Egypt Supply"
+    },
+    {
+      ID: 9,
+      Name: "Kiwi",
+      Category: "Acidic",
+      Price: 90,
+      Unit: "kg",
+      Image: "assets/image/Kiwi.jpg",
+      Description: "High-quality kiwi fruit with a tangy and refreshing taste. Offered through specialty fruit distributors in Egypt.",
+      Type: "Berry Fruit",
+      SupplierName: "Green Valley Egypt"
+    },
+    {
+      ID: 10,
+      Name: "Peach",
+      Category: "Acidic",
+      Price: 65,
+      Unit: "kg",
+      Image: "assets/image/Peach.jpg",
+      Description: "Soft Egyptian peaches with natural sweetness and aromatic flavor. Commonly sourced from Upper Egypt farms.",
+      Type: "Drupe Fruit",
+      SupplierName: "Sunrise Orchards Egypt"
+    },
+    {
+      ID: 11,
+      Name: "Lemon",
+      Category: "Acidic",
+      Price: 25,
+      Unit: "kg",
+      Image: "assets/image/Lemon.jpg",
+      Description: "Fresh lemons with strong citrus aroma and sharp flavor. Widely used in households, restaurants, and juice outlets.",
+      Type: "Hesperidium Fruit",
+      SupplierName: "Zest Egypt Trading"
+    }
+  ]
+};
 
-const fruitsData = [
-  {
-    id: 1,
-    name: "Apple",
-    category: "Alkaline",
-    price: 35,
-    unit: "kg",
-    image: "assets/image/Apple.avif",
-    description: "A crisp and refreshing apple with a perfect balance of sweetness and tartness. Rich in fiber, vitamin C, and antioxidants. Sourced from high-altitude orchards for the finest quality.",
-    type: "Pome Fruit",
-    supplierName: "GreenValley Farms",
-    suppliers: [
-      {
-        id: "s1",
-        supplierName: "GreenValley Farms",
-        sinceWhen: "2018-03-15",
-        city: "London",
-        contactPerson: "James Harrington",
-        phone: "+44 20 7946 0958"
-      },
-      {
-        id: "s2",
-        supplierName: "OrchardFresh Ltd.",
-        sinceWhen: "2020-07-01",
-        city: "Berlin",
-        contactPerson: "Anna Müller",
-        phone: "+49 30 2355 6790"
-      }
-    ]
-  },
-  {
-    id: 2,
-    name: "Mango",
-    category: "Acidic",
-    price: 60,
-    unit: "kg",
-    image: "assets/image/Mango.jpg",
-    description: "The king of fruits — juicy, tropical, and irresistibly sweet. Packed with vitamins A and C, mangoes are hand-picked at peak ripeness from sun-drenched orchards.",
-    type: "Drupe Fruit",
-    supplierName: "TropicBurst Co.",
-    suppliers: [
-      {
-        id: "s3",
-        supplierName: "TropicBurst Co.",
-        sinceWhen: "2017-01-20",
-        city: "Dubai",
-        contactPerson: "Khalid Al-Rashid",
-        phone: "+971 4 310 0200"
-      },
-      {
-        id: "s4",
-        supplierName: "SunHarvest Exports",
-        sinceWhen: "2021-05-10",
-        city: "Cairo",
-        contactPerson: "Omar Hassan",
-        phone: "+20 2 2345 6789"
-      }
-    ]
-  },
-  {
-    id: 3,
-    name: "Strawberry",
-    category: "Acidic",
-    price: 80,
-    unit: "kg",
-    image: "assets/image/Strawberry.webp",
-    description: "Bright, ruby-red strawberries bursting with summer sweetness. High in vitamin C, manganese, and powerful antioxidants. Perfect for desserts, smoothies, or eating fresh.",
-    type: "Aggregate Fruit",
-    supplierName: "BerryBliss Gardens",
-    suppliers: [
-      {
-        id: "s5",
-        supplierName: "BerryBliss Gardens",
-        sinceWhen: "2019-04-12",
-        city: "Paris",
-        contactPerson: "Sophie Dubois",
-        phone: "+33 1 4523 7890"
-      },
-      {
-        id: "s6",
-        supplierName: "Mohamed Bayoumy",
-        sinceWhen: "2003-02-13",
-        city: "Paris",
-        contactPerson: "Ahmed Elsayed",
-        phone: "+20 102 4800 476"
-      },
-      
-    ]
-  },
-  {
-    id: 4,
-    name: "Watermelon",
-    category: "Alkaline",
-    price: 20,
-    unit: "kg",
-    image: "assets/image/Watermelon.jpg",
-    description: "Cool and hydrating with a luscious red interior. Watermelon is 92% water, making it perfect for hot days. Rich in lycopene, vitamins A, B6, and C.",
-    type: "Pepo Fruit",
-    supplierName: "Nile Delta Produce",
-    suppliers: [
-      {
-        id: "s7",
-        supplierName: "Nile Delta Produce",
-        sinceWhen: "2016-06-05",
-        city: "Cairo",
-        contactPerson: "Youssef Kamal",
-        phone: "+20 2 2987 6543"
-      },
-      {
-        id: "s8",
-        supplierName: "SunGrown Exports",
-        sinceWhen: "2022-02-14",
-        city: "Alexandria",
-        contactPerson: "Nadia Ibrahim",
-        phone: "+20 3 4876 2310"
-      }
-    ]
-  },
-  {
-    id: 5,
-    name: "Grapes",
-    category: "Acidic",
-    price: 55,
-    unit: "kg",
-    image: "assets/image/Grapes.png",
-    description: "Plump, seedless grapes with a satisfying snap and deep, complex flavor. Loaded with resveratrol and antioxidants. Available in green, red, and black varieties.",
-    type: "Berry Fruit",
-    supplierName: "Vineyard Select",
-    suppliers: [
-      {
-        id: "s9",
-        supplierName: "Vineyard Select",
-        sinceWhen: "2015-09-23",
-        city: "Barcelona",
-        contactPerson: "Carlos Fernández",
-        phone: "+34 93 456 7890"
-      },
-      {
-        id: "s10",
-        supplierName: "MediFresh Group",
-        sinceWhen: "2020-11-30",
-        city: "Rome",
-        contactPerson: "Marco Rossi",
-        phone: "+39 06 4567 8901"
-      }
-    ]
-  },
-  {
-    id: 6,
-    name: "Orange",
-    category: "Acidic",
-    price: 30,
-    unit: "kg",
-    image: "assets/image/Orange.jpg",
-    description: "Sun-ripened oranges with a vibrant aroma and a burst of vitamin C in every slice. Thin-skinned and extra juicy, perfect for fresh-squeezed juice or snacking.",
-    type: "Hesperidium Fruit",
-    supplierName: "CitrusSun Farms",
-    suppliers: [
-      {
-        id: "s11",
-        supplierName: "CitrusSun Farms",
-        sinceWhen: "2018-12-01",
-        city: "Riyadh",
-        contactPerson: "Ahmed Al-Saud",
-        phone: "+966 11 234 5678"
-      }
-    ]
-  },
-  {
-    id: 7,
-    name: "Banana",
-    category: "Alkaline",
-    price: 15,
-    unit: "kg",
-    image: "assets/image/Banana.jpg",
-    description: "Creamy, naturally sweet bananas — nature's most convenient snack. An excellent source of potassium, B6, and dietary fiber. Ethically sourced from certified tropical farms.",
-    type: "Berry Fruit",
-    supplierName: "TropicalRoots Inc.",
-    suppliers: [
-      {
-        id: "s12",
-        supplierName: "TropicalRoots Inc.",
-        sinceWhen: "2014-03-08",
-        city: "Amsterdam",
-        contactPerson: "Pieter van Dijk",
-        phone: "+31 20 789 0123"
-      },
-      {
-        id: "s13",
-        supplierName: "BananaLeaf Exports",
-        sinceWhen: "2023-01-15",
-        city: "Istanbul",
-        contactPerson: "Elif Şahin",
-        phone: "+90 212 345 6789"
-      }
-    ]
-  },
-  {
-    id: 8,
-    name: "Pineapple",
-    category: "Acidic",
-    price: 45,
-    unit: "kg",
-    image: "assets/image/Pineapple.webp",
-    description: "Bold, tropical pineapple with a fiery sweetness and refreshing tang. Loaded with bromelain enzyme, vitamin C, and manganese. Hand-harvested from sun-drenched plantations.",
-    type: "Multiple Fruit",
-    supplierName: "TropicCrown Exports",
-    suppliers: [
-      {
-        id: "s14",
-        supplierName: "TropicCrown Exports",
-        sinceWhen: "2016-08-20",
-        city: "Dubai",
-        contactPerson: "Rania Khalil",
-        phone: "+971 4 555 0321"
-      },
-      {
-        id: "s15",
-        supplierName: "GoldenIsle Farms",
-        sinceWhen: "2020-03-10",
-        city: "Amsterdam",
-        contactPerson: "Lars van Houten",
-        phone: "+31 20 654 9870"
-      }
-    ]
-  },
-  {
-    id: 9,
-    name: "Kiwi",
-    category: "Acidic",
-    price: 90,
-    unit: "kg",
-    image: "assets/image/Kiwi.jpg",
-    description: "Small but mighty — kiwi packs more vitamin C than an orange in its bright green flesh. A tangy-sweet flavor with a smooth finish. Sourced from high-altitude New Zealand-style farms.",
-    type: "Berry Fruit",
-    supplierName: "GreenKiwi Global",
-    suppliers: [
-      {
-        id: "s16",
-        supplierName: "GreenKiwi Global",
-        sinceWhen: "2017-04-14",
-        city: "Sydney",
-        contactPerson: "Olivia Bennett",
-        phone: "+61 2 9876 5432"
-      }
-    ]
-  },
-  {
-    id: 10,
-    name: "Peach",
-    category: "Acidic",
-    price: 65,
-    unit: "kg",
-    image: "assets/image/Peach.jpg",
-    description: "Velvety, sun-kissed peaches with a honey-sweet aroma and juicy flesh. Rich in vitamins A and C, potassium, and dietary fiber. Perfect for eating fresh or baking.",
-    type: "Drupe Fruit",
-    supplierName: "SunKiss Orchards",
-    suppliers: [
-      {
-        id: "s17",
-        supplierName: "SunKiss Orchards",
-        sinceWhen: "2018-06-01",
-        city: "Paris",
-        contactPerson: "Camille Fontaine",
-        phone: "+33 1 5678 9012"
-      },
-      {
-        id: "s18",
-        supplierName: "VelvetFruit GmbH",
-        sinceWhen: "2021-09-15",
-        city: "Berlin",
-        contactPerson: "Klaus Fischer",
-        phone: "+49 30 9876 5432"
-      }
-    ]
-  },
-  {
-    id: 11,
-    name: "Lemon",
-    category: "Acidic",
-    price: 25,
-    unit: "kg",
-    image: "assets/image/Lemon.jpg",
-    description: "Intensely zesty lemons with a sharp, clean acidity that brightens any dish or drink. A kitchen essential packed with vitamin C, citric acid, and natural antibacterial properties.",
-    type: "Hesperidium Fruit",
-    supplierName: "ZestFresh Trading",
-    suppliers: [
-      {
-        id: "s19",
-        supplierName: "ZestFresh Trading",
-        sinceWhen: "2014-01-10",
-        city: "Alexandria",
-        contactPerson: "Tarek Mansour",
-        phone: "+20 3 5432 1098"
-      },
-      {
-        id: "s20",
-        supplierName: "CitroMed Exports",
-        sinceWhen: "2020-05-20",
-        city: "Rome",
-        contactPerson: "Giulia Marino",
-        phone: "+39 06 8765 4321"
-      }
-    ]
-  }
-];
+const suppliersEntitySet = {
+  value: [
+    {
+      ID: "s1",
+      FruitID: 1,
+      SupplierName: "Delta Fresh Farms",
+      SinceWhen: "2018-03-15",
+      City: "Cairo",
+      ContactPerson: "Ahmed Mostafa",
+      Phone: "+20 101 234 5678"
+    },
+    {
+      ID: "s2",
+      FruitID: 1,
+      SupplierName: "El Nada Fruits",
+      SinceWhen: "2020-07-01",
+      City: "Giza",
+      ContactPerson: "Mona Hassan",
+      Phone: "+20 102 456 7890"
+    },
+    {
+      ID: "s3",
+      FruitID: 2,
+      SupplierName: "Nile Mango Traders",
+      SinceWhen: "2017-01-20",
+      City: "Ismailia",
+      ContactPerson: "Khaled Fathy",
+      Phone: "+20 100 778 9911"
+    },
+    {
+      ID: "s4",
+      FruitID: 2,
+      SupplierName: "Sun Harvest Egypt",
+      SinceWhen: "2021-05-10",
+      City: "Cairo",
+      ContactPerson: "Omar Hassan",
+      Phone: "+20 122 345 6789"
+    },
+    {
+      ID: "s5",
+      FruitID: 3,
+      SupplierName: "Berry Egypt",
+      SinceWhen: "2019-04-12",
+      City: "Alexandria",
+      ContactPerson: "Salma Adel",
+      Phone: "+20 111 452 7890"
+    },
+    {
+      ID: "s6",
+      FruitID: 3,
+      SupplierName: "Mohamed Bayoumy Fruits",
+      SinceWhen: "2003-02-13",
+      City: "Mansoura",
+      ContactPerson: "Ahmed Elsayed",
+      Phone: "+20 102 480 0476"
+    },
+    {
+      ID: "s7",
+      FruitID: 4,
+      SupplierName: "Nile Delta Produce",
+      SinceWhen: "2016-06-05",
+      City: "Cairo",
+      ContactPerson: "Youssef Kamal",
+      Phone: "+20 109 298 7654"
+    },
+    {
+      ID: "s8",
+      FruitID: 4,
+      SupplierName: "SunGrown Egypt",
+      SinceWhen: "2022-02-14",
+      City: "Alexandria",
+      ContactPerson: "Nadia Ibrahim",
+      Phone: "+20 120 487 6231"
+    },
+    {
+      ID: "s9",
+      FruitID: 5,
+      SupplierName: "Upper Egypt Vineyards",
+      SinceWhen: "2015-09-23",
+      City: "Minya",
+      ContactPerson: "Karim Nabil",
+      Phone: "+20 155 456 7890"
+    },
+    {
+      ID: "s10",
+      FruitID: 5,
+      SupplierName: "MediFresh Egypt",
+      SinceWhen: "2020-11-30",
+      City: "Sohag",
+      ContactPerson: "Mahmoud Samir",
+      Phone: "+20 128 567 8901"
+    },
+    {
+      ID: "s11",
+      FruitID: 6,
+      SupplierName: "Citrus El Wadi",
+      SinceWhen: "2018-12-01",
+      City: "Beni Suef",
+      ContactPerson: "Ahmed Saad",
+      Phone: "+20 110 234 5678"
+    },
+    {
+      ID: "s12",
+      FruitID: 7,
+      SupplierName: "Banana El Kheir",
+      SinceWhen: "2014-03-08",
+      City: "Aswan",
+      ContactPerson: "Hany Reda",
+      Phone: "+20 121 789 0123"
+    },
+    {
+      ID: "s13",
+      FruitID: 7,
+      SupplierName: "El Baraka Banana Supply",
+      SinceWhen: "2023-01-15",
+      City: "Fayoum",
+      ContactPerson: "Eman Sherif",
+      Phone: "+20 100 345 6789"
+    },
+    {
+      ID: "s14",
+      FruitID: 8,
+      SupplierName: "Tropical Egypt Supply",
+      SinceWhen: "2016-08-20",
+      City: "Port Said",
+      ContactPerson: "Rania Khalil",
+      Phone: "+20 114 555 0321"
+    },
+    {
+      ID: "s15",
+      FruitID: 8,
+      SupplierName: "Golden Nile Fruits",
+      SinceWhen: "2020-03-10",
+      City: "Suez",
+      ContactPerson: "Laila Atef",
+      Phone: "+20 123 654 9870"
+    },
+    {
+      ID: "s16",
+      FruitID: 9,
+      SupplierName: "Green Valley Egypt",
+      SinceWhen: "2017-04-14",
+      City: "Zagazig",
+      ContactPerson: "Nourhan Tarek",
+      Phone: "+20 127 987 6543"
+    },
+    {
+      ID: "s17",
+      FruitID: 10,
+      SupplierName: "Sunrise Orchards Egypt",
+      SinceWhen: "2018-06-01",
+      City: "Assiut",
+      ContactPerson: "Mariam Nader",
+      Phone: "+20 112 567 9012"
+    },
+    {
+      ID: "s18",
+      FruitID: 10,
+      SupplierName: "El Rowad Fruit Farms",
+      SinceWhen: "2021-09-15",
+      City: "Tanta",
+      ContactPerson: "Khaled Ezz",
+      Phone: "+20 115 987 6543"
+    },
+    {
+      ID: "s19",
+      FruitID: 11,
+      SupplierName: "Zest Egypt Trading",
+      SinceWhen: "2014-01-10",
+      City: "Alexandria",
+      ContactPerson: "Tarek Mansour",
+      Phone: "+20 103 543 2109"
+    },
+    {
+      ID: "s20",
+      FruitID: 11,
+      SupplierName: "Citro Nile Exports",
+      SinceWhen: "2020-05-20",
+      City: "Cairo",
+      ContactPerson: "Ghada Ali",
+      Phone: "+20 106 876 5432"
+    }
+  ]
+};
