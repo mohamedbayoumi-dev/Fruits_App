@@ -1055,6 +1055,36 @@ body {
   resize: vertical;
 }
 
+.modal-input[type="file"] {
+  padding: 6px;
+  cursor: pointer;
+  background: var(--white);
+}
+
+.modal-input[type="file"]::file-selector-button {
+  margin-right: 12px;
+  padding: 8px 14px;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-sm);
+  color: var(--white);
+  background: var(--primary);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.modal-input[type="file"]::file-selector-button:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.modal-input[type="file"]::file-selector-button:active {
+  transform: scale(0.98);
+}
+
+
 /* ================================================
    21. DELETE SUPPLIER MODAL CONTENT
    Used by: showDeleteModal()

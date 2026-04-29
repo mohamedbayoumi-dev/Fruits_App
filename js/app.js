@@ -233,8 +233,8 @@ function showCreateFruitModal() {
             <input type="text" name="supplierName" class="modal-input" placeholder="Primary supplier" required>
           </label>
           <label class="modal-field modal-field-full">
-            <span>Image Path</span>
-            <input type="text" name="image" class="modal-input" placeholder="assets/image/fruit.png">
+            <span>Upload Image</span>
+            <input type="file" name="imageFile" class="modal-input" accept="image/*">
           </label>
           <label class="modal-field modal-field-full">
             <span>Description</span>
@@ -275,19 +275,20 @@ function showCreateFruitModal() {
   };
   document.addEventListener("keydown", escHandler);
 
-  document.getElementById("createFruitForm").addEventListener("submit", (e) => {
+  document.getElementById("createFruitForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
+    const selectedFile = e.target.elements.imageFile?.files?.[0] || null;
+    const uploadedImage = selectedFile ? await readFileAsDataUrl(selectedFile) : "";
+
     const fruit = {
       id: createFruitId(),
       name: formData.get("name").toString().trim(),
       category: formData.get("category").toString(),
       price: Number(formData.get("price")),
       unit: formData.get("unit").toString().trim(),
-      image:
-        normalizeImagePath(formData.get("image").toString().trim()) ||
-        createFallbackImagePath(formData.get("name").toString().trim()),
+      image: uploadedImage || createFallbackImagePath(formData.get("name").toString().trim()),
       description: formData.get("description").toString().trim(),
       type: formData.get("type").toString().trim(),
       supplierName: formData.get("supplierName").toString().trim(),
@@ -435,8 +436,8 @@ function showEditFruitModal(fruitId) {
             <input type="text" name="supplierName" class="modal-input" value="${escapeHtml(fruit.supplierName)}" required>
           </label>
           <label class="modal-field modal-field-full">
-            <span>Image Path</span>
-            <input type="text" name="image" class="modal-input" value="${escapeHtml(fruit.image)}">
+            <span>Upload New Image</span>
+            <input type="file" name="imageFile" class="modal-input" accept="image/*">
           </label>
           <label class="modal-field modal-field-full">
             <span>Description</span>
@@ -477,16 +478,19 @@ function showEditFruitModal(fruitId) {
   };
   document.addEventListener("keydown", escHandler);
 
-  document.getElementById("editFruitForm").addEventListener("submit", (e) => {
+  document.getElementById("editFruitForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
+    const selectedFile = e.target.elements.imageFile?.files?.[0] || null;
+    const uploadedImage = selectedFile ? await readFileAsDataUrl(selectedFile) : "";
+
     const updates = {
       name: formData.get("name").toString().trim(),
       category: formData.get("category").toString(),
       price: Number(formData.get("price")),
       unit: formData.get("unit").toString().trim(),
-      image: normalizeImagePath(formData.get("image").toString().trim()),
+      image: uploadedImage || fruit.image,
       description: formData.get("description").toString().trim(),
       type: formData.get("type").toString().trim(),
       supplierName: formData.get("supplierName").toString().trim(),
@@ -505,7 +509,6 @@ function showEditFruitModal(fruitId) {
       return;
     }
 
-    updates.image = updates.image || createFallbackImagePath(updates.name);
     updateFruitItem(fruitId, updates);
     closeModal();
   });
@@ -1261,6 +1264,15 @@ function createFruitId() {
 function createFallbackImagePath(fruitName) {
   const safeName = (fruitName || "Fruit").trim();
   return `https://via.placeholder.com/180x180/e8f5e9/2d6a4f?text=${encodeURIComponent(safeName[0] || "F")}`;
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
 }
 
 function normalizeImagePath(imagePath) {
