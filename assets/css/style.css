@@ -1,0 +1,1150 @@
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 14px;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font);
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ================================================
+   2. APP SHELL + MAIN LAYOUT
+   Used by: .app-shell / .main-layout
+   ================================================ */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main-layout {
+  display: flex;
+  flex: 1;
+  gap: 0;
+  overflow: hidden;
+}
+
+/* ================================================
+   3. TOP BAR
+   Used by: top navigation
+   ================================================ */
+.top-bar {
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  height: 52px;
+  padding: 0 24px;
+  color: var(--white);
+  background: var(--top);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.top-bar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.top-bar-logo .logo-icon {
+  font-size: 20px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.top-bar-subtitle {
+  margin-left: 4px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 12px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.top-bar-spacer {
+  flex: 1;
+}
+
+.top-bar-version {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+/* ================================================
+   4. MASTER PANEL
+   Used by: fruit list sidebar
+   ================================================ */
+.master-panel {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 320px;
+  min-width: 280px;
+  max-width: 360px;
+  overflow: hidden;
+  background: var(--white);
+  border-right: 1px solid var(--border);
+}
+
+.master-header {
+  flex-shrink: 0;
+  padding: 16px 16px 12px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.master-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.fruit-count {
+  padding: 2px 8px;
+  border-radius: 20px;
+  color: var(--primary);
+  background: var(--primary-light);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.master-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.btn-master {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ================================================
+   5. GLOBAL SEARCH INPUTS
+   Used by: left panel search + supplier filter
+   ================================================ */
+.search-wrap,
+.supplier-filter-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon,
+.filter-icon {
+  position: absolute;
+  left: 10px;
+  color: var(--text-muted);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+#searchInput,
+.supplier-filter-input {
+  width: 100%;
+  padding: 8px 34px 8px 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  outline: none;
+  color: var(--text-primary);
+  background: var(--bg);
+  font-family: var(--font);
+  font-size: 13px;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+#searchInput::placeholder,
+.supplier-filter-input::placeholder {
+  color: var(--text-muted);
+}
+
+#searchInput:focus,
+.supplier-filter-input:focus {
+  background: var(--white);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(10, 122, 90, 0.1);
+}
+
+#clearSearch,
+#clearSearchSupplier {
+  position: absolute;
+  right: 8px;
+  padding: 2px;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+#clearSearch:hover,
+#clearSearchSupplier:hover {
+  color: var(--primary);
+}
+
+/* ================================================
+   6. FRUIT LIST
+   Used by: renderFruitList()
+   ================================================ */
+.fruit-list {
+  flex: 1;
+  padding: 6px 0;
+  overflow-y: auto;
+}
+
+.fruit-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.fruit-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.fruit-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.fruit-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.fruit-item:hover,
+.fruit-item.active {
+  background: var(--primary-light);
+}
+
+.fruit-item.active {
+  border-left-color: var(--primary);
+}
+
+.fruit-item-image-wrap {
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  overflow: hidden;
+  background: var(--bg-alt);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.fruit-item-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s;
+}
+
+.fruit-item:hover .fruit-item-img {
+  transform: scale(1.05);
+}
+
+.fruit-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.fruit-item-name {
+  margin-bottom: 3px;
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fruit-item-category {
+  margin-bottom: 3px;
+}
+
+.fruit-item-price {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.price-value {
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.price-unit {
+  color: var(--text-muted);
+}
+
+.fruit-item-arrow {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  font-size: 18px;
+  font-weight: 300;
+}
+
+.fruit-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.fruit-item-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.fruit-item-delete:hover {
+  color: var(--error);
+  background: var(--error-bg);
+  border-color: #f5c6c2;
+}
+
+/* ================================================
+   7. REUSABLE BADGES + EMPTY LIST STATES
+   Used by: fruit cards / detail header / no results
+   ================================================ */
+.category-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.category-alkaline {
+  color: var(--alkaline-text);
+  background: var(--alkaline-bg);
+  border: 1px solid var(--alkaline-border);
+}
+
+.category-acidic {
+  color: var(--acidic-text);
+  background: var(--acidic-bg);
+  border: 1px solid var(--acidic-border);
+}
+
+.no-results {
+  padding: 48px 24px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.no-results-icon {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 36px;
+}
+
+.no-results p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.no-results small {
+  font-size: 12px;
+}
+
+/* ================================================
+   8. DETAIL PANEL SCROLL AREA
+   Used by: right side content wrapper
+   ================================================ */
+.detail-panel {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  background: var(--bg);
+}
+
+.detail-panel::-webkit-scrollbar {
+  width: 5px;
+}
+
+.detail-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.detail-panel::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+/* ================================================
+   9. EMPTY STATE
+   Used by: showEmptyState()
+   ================================================ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  height: 100%;
+  padding: 48px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.empty-state-icon {
+  margin-bottom: 16px;
+  font-size: 64px;
+  opacity: 0.5;
+  animation: float 3s ease-in-out infinite;
+}
+
+.empty-state h3 {
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.empty-state p {
+  max-width: 300px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* ================================================
+   10. DETAIL HEADER
+   Used by: renderDetailPanel()
+   ================================================ */
+.detail-header {
+  padding: 24px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border-light);
+  animation: fadeSlideIn 0.25s ease;
+}
+
+.detail-hero {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.detail-img-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.detail-img {
+  display: block;
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.detail-badge {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  font-size: 10px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.detail-title-block {
+  flex: 1;
+  padding-top: 4px;
+}
+
+.detail-fruit-name {
+  margin-bottom: 10px;
+  color: var(--text-primary);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.detail-description {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.detail-item-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================================
+   11. TABS NAVIGATION
+   Used by: Supplier Info / More Data tabs
+   ================================================ */
+.tabs-nav {
+  display: flex;
+  gap: 0;
+  padding: 0 24px;
+  background: var(--white);
+  border-bottom: 2px solid var(--border-light);
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: -2px;
+  padding: 12px 20px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  color: var(--primary);
+}
+
+.tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 600;
+}
+
+.tab-icon {
+  font-size: 14px;
+}
+
+.tab-content {
+  padding: 20px 24px;
+  animation: fadeSlideIn 0.2s ease;
+}
+
+/* ================================================
+   12. MORE DATA TAB
+   Used by: renderMoreDataTab()
+   ================================================ */
+.more-data-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.more-data-card {
+  padding: 14px 16px;
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.more-data-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.more-data-label {
+  margin-bottom: 6px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.more-data-value {
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* ================================================
+   13. SUPPLIER TAB SHELL
+   Used by: renderSupplierTab()
+   ================================================ */
+
+.supplier-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.supplier-filter-wrap {
+  width: 400px;
+}
+
+.supplier-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ================================================
+   14. BUTTON SYSTEM
+   Used by: create / save / cancel / modal actions
+   ================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 16px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn-create {
+  color: var(--white);
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-create:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-create:active {
+  transform: scale(0.97);
+}
+
+.btn-save {
+  color: var(--white);
+  background: var(--info);
+  border-color: var(--info);
+}
+
+.btn-save:hover {
+  background: var(--info-two);
+  border-color: var(--blue);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-save:active {
+  transform: scale(0.97);
+}
+
+.btn-cancel {
+  color: var(--text-secondary);
+  background: var(--white);
+  border-color: var(--border);
+}
+
+.btn-cancel:hover {
+  color: var(--error);
+  background: var(--bg-alt);
+}
+
+.btn-danger {
+  color: var(--white);
+  background: var(--error);
+  border-color: var(--error);
+}
+
+.btn-danger:hover {
+  background: #a93226;
+  border-color: #a93226;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-danger:active {
+  transform: scale(0.97);
+}
+
+/* ================================================
+   15. SUPPLIER TABLE
+   Used by: supplier table wrapper / header / rows
+   ================================================ */
+.table-wrapper {
+  overflow: hidden;
+  overflow-x: auto;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.supplier-table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.supplier-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--bg-alt);
+}
+
+.supplier-table th {
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-align: left;
+  text-transform: uppercase;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.supplier-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: middle;
+}
+
+.supplier-row:last-child td {
+  border-bottom: none;
+}
+
+.supplier-row:hover td {
+  background: rgba(10, 122, 90, 0.03);
+}
+
+.supplier-row.dirty td {
+  background: var(--accent-light);
+}
+
+.table-footer {
+  padding: 8px 14px;
+  color: var(--primary);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border-light);
+  font-size: 11px;
+  text-align: right;
+}
+
+.no-data {
+  padding: 32px !important;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+}
+
+/* ================================================
+   16. SUPPLIER SORTING
+   Used by: clickable supplier table headers
+   ================================================ */
+.sortable {
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.sortable:hover {
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+.sort-icon {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+.sorted-asc .sort-icon,
+.sorted-desc .sort-icon {
+  color: var(--primary);
+  opacity: 1;
+}
+
+/* ================================================
+   17. SUPPLIER INPUT CELLS
+   Used by: inline editable supplier rows
+   ================================================ */
+.cell-input {
+  width: 100%;
+  min-width: 90px;
+  padding: 5px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  outline: none;
+  color: var(--text-primary);
+  background: transparent;
+  font-family: var(--font);
+  font-size: 13px;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.cell-input:hover {
+  background: var(--white);
+  border-color: var(--border);
+}
+
+.cell-input:focus {
+  background: var(--white);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(10, 122, 90, 0.12);
+}
+
+.city-field-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.city-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 28px !important;
+  cursor: pointer;
+}
+
+.f4-icon {
+  position: absolute;
+  right: 6px;
+  color: var(--primary);
+  font-size: 10px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+/* ================================================
+   18. SUPPLIER DELETE ACTION
+   Used by: delete supplier button in each row
+   ================================================ */
+.btn-delete-supplier {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--error);
+  background: var(--white);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+
+.btn-delete-supplier:hover {
+  background: var(--error-bg);
+  border-color: #f5c6c2;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-delete-supplier:active {
+  transform: scale(0.93);
+}
+
+/* ================================================
+   19. MODAL OVERLAY + DIALOG
+   Used by: delete modal + create supplier modal
+   ================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(10, 20, 30, 0.45);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.modal-overlay.modal-visible {
+  opacity: 1;
+}
+
+.modal-box {
+  width: 100%;
+  max-width: 420px;
+  overflow: hidden;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  transform: translateY(16px) scale(0.97);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.modal-visible .modal-box {
+  transform: translateY(0) scale(1);
+}
+
+.modal-box-form {
+  max-width: 560px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.modal-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--error);
+  background: var(--error-bg);
+  font-size: 16px;
+}
+
+.modal-header-icon-create {
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+.modal-title {
+  margin: 0 0 2px;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.modal-subtitle {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.modal-body {
+  padding: 20px 24px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px;
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border-light);
+}
+
+/* ================================================
+   20. CREATE SUPPLIER MODAL FORM
+   Used by: showCreateSupplierModal()
+   ================================================ */
+.modal-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-field:last-child {
+  grid-column: 1 / -1;
+}
+
+.modal-field-full {
+  grid-column: 1 / -1;
+}
+
+.modal-field span {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.modal-input {
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  outline: none;
+  color: var(--text-primary);
+  background: var(--bg);
+  font-family: var(--font);
+  font-size: 13px;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.modal-input:focus {
+  background: var(--white);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(10, 122, 90, 0.1);
+}
+
+.modal-textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* ================================================
+   21. DELETE SUPPLIER MODAL CONTENT
+   Used by: showDeleteModal()
+   ================================================ */
+.modal-message {
+  margin-bottom: 14px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.modal-supplier-card {
+  padding: 14px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.modal-supplier-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.modal-supplier-name i {
+  color: var(--primary);
+}
+
+.modal-supplier-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.modal-supplier-meta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.modal-supplier-meta i {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+/* ================================================
+   22. TOAST NOTIFICATIONS
+   Used by: showToast()
+   ================================================ */
+.toast {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  z-index: 9999;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  opacity: 0;
+  pointer-events: none;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  transform: translateY(20px);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-lg);
+}
+
+.toast-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-success {
+  color: var(--success);
+  background: var(--success-bg);
+  border: 1px solid #b8ddd2;
+}
+
+.toast-info {
+  color: var(--info);
+  background: var(--info-bg);
+  border: 1px solid #b8d4e8;
+}
+
+.toast-error {
+  color: var(--error);
+  background: var(--error-bg);
+  border: 1px solid #f5c6c2;
+}

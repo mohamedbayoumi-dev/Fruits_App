@@ -1,0 +1,54 @@
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+/* ── Design Tokens (CSS Variables) ── */
+:root {
+  /* Brand Colors — Fiori teal/green palette */
+  --primary: #0a7a5a;
+  --primary-dark: #065e44;
+  --primary-light: #e6f4f0;
+  --primary-hover: #0d9068;
+  --accent: #f0a500;
+  --accent-light: #fff8e6;
+
+  /* Neutrals */
+  --white: #ffffff;
+  --bg: #f4f6f8;
+  --bg-alt: #eef1f4;
+  --border: #dce1e7;
+  --border-light: #edf0f3;
+  --text-primary: #1a2332;
+  --text-secondary: #5a6a7a;
+  --text-muted: #8a9bac;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.09);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+
+  /* Category badges */
+  --alkaline-bg: #e8f5f0;
+  --alkaline-text: #0a7a5a;
+  --alkaline-border: #b8ddd2;
+  --acidic-bg: #fff3e6;
+  --acidic-text: #c45f00;
+  --acidic-border: #ffd4a0;
+
+  /* Status */
+  --success: #1a7a4a;
+  --success-bg: #e6f5ee;
+  --info: #1a6aa0;
+  --info-two: #3382b6;
+  --info-bg: #e6f0fa;
+  --error: #c0392b;
+  --error-bg: #fce9e7;
+  --top:#355872;
+
+  /* Spacing */
+  --gap: 16px;
+  --radius: 8px;
+  --radius-sm: 4px;
+  --radius-lg: 12px;
+
+  /* Typography */
+  --font: 'IBM Plex Sans', -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
