@@ -39,6 +39,7 @@ A responsive **Master-Detail web application** built with vanilla HTML, CSS, and
 - **Responsive Design** — Fully usable on mobile and tablet
 - **Accessibility** — ARIA roles, keyboard navigation, focus management
 - **XSS Protection** — All user input is sanitized via `escapeHtml()`
+- **Dirty State Tracking** — Edited rows are visually highlighted until saved
 
 ---
 
@@ -110,14 +111,22 @@ Fruits_App/
 | Save & Cancel buttons | ✅ |
 | Bonus: Sorting & Filtering in table | ✅ |
 | Bonus: Custom CSS Styling | ✅ |
+| Extra: Create / Edit / Delete Fruit Items | ✅ |
+| Extra: Add / Delete Suppliers | ✅ |
+| Extra: Toast Notifications | ✅ |
+| Extra: Responsive Design (Mobile & Tablet) | ✅ |
+| Extra: Keyboard Accessibility & ARIA | ✅ |
+| Extra: XSS Protection | ✅ |
+| Extra: LocalStorage Persistence | ✅ |
+| Extra: Dirty State Tracking | ✅ |
 
 ---
 
 ## 👤 Author
 
 **Mohamed Bayoumy**
-- GitHub: [mohamedbayoumi-dev](https://github.com/mohamedbayoumi-dev)
-- LinkedIn: [mohamedbayoumi-dev](https://www.linkedin.com/in/mohamedbayoumi-dev)
+- GitHub: (https://github.com/mohamedbayoumi-dev)
+- LinkedIn: (https://www.linkedin.com/in/mohamedbayoumi-dev)
 
 ---
 
