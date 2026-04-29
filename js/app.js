@@ -1,6 +1,5 @@
-
 const state = {
-  fruits: [], 
+  fruits: [],
   filteredFruits: [],
   selectedFruitId: null,
   activeTab: "supplier",
@@ -10,24 +9,25 @@ const state = {
     direction: "asc",
   },
   supplierFilter: "",
-  supplierFilterRaw: "", 
+  supplierFilterRaw: "",
 };
 
 // ─────────────────────────────────────────────
-// INITIALISATION 
+// INITIALISATION
 // ─────────────────────────────────────────────
 
 function init() {
-
   state.fruits = loadFruitsFromStorage();
+  state.fruits.forEach((fruit) => {
+    fruit.image = normalizeImagePath(fruit.image);
+  });
   state.filteredFruits = [...state.fruits];
 
   setupMasterPanelActions();
   renderFruitList(state.filteredFruits);
   attachSearchEvent();
-  showEmptyState(); 
+  showEmptyState();
 
- 
   if (state.fruits.length > 0) {
     selectFruit(state.fruits[0].id);
   }
@@ -37,10 +37,6 @@ function init() {
 // DATA PERSISTENCE (localStorage)
 // ─────────────────────────────────────────────
 
-/**
- * Loads fruit data, merging any localStorage overrides onto the base dataset.
- * @returns {Array} Array of fruit objects
- */
 function loadFruitsFromStorage() {
   const saved = localStorage.getItem("fruitsAppData");
   if (!saved) return deepClone(fruitsData);
@@ -55,13 +51,17 @@ function loadFruitsFromStorage() {
       return {
         ...deepClone(fruit),
         ...deepClone(savedFruit),
+        image: normalizeImagePath(savedFruit.image || fruit.image),
         suppliers: deepClone(savedFruit.suppliers || fruit.suppliers),
       };
     });
 
     const extraSavedFruits = savedData
       .filter((savedFruit) => !fruitsData.some((fruit) => fruit.id === savedFruit.id))
-      .map((fruit) => deepClone(fruit));
+      .map((fruit) => ({
+        ...deepClone(fruit),
+        image: normalizeImagePath(fruit.image),
+      }));
 
     return [...mergedBaseFruits, ...extraSavedFruits];
   } catch (e) {
@@ -70,16 +70,10 @@ function loadFruitsFromStorage() {
   }
 }
 
-/**
- * Persists the current fruits state to localStorage.
- */
 function saveFruitsToStorage() {
   localStorage.setItem("fruitsAppData", JSON.stringify(state.fruits));
 }
 
-/**
- * Adds master panel action buttons and wires their events once on startup.
- */
 function setupMasterPanelActions() {
   const header = document.querySelector(".master-header");
   if (!header || document.getElementById("createFruitBtn")) return;
@@ -104,10 +98,6 @@ function setupMasterPanelActions() {
 // FRUIT LIST (LEFT PANEL)
 // ─────────────────────────────────────────────
 
-/**
- * Renders the fruit list items into the master panel.
- * @param {Array} fruits - Fruits to render
- */
 function renderFruitList(fruits) {
   const listEl = document.getElementById("fruitList");
   const countEl = document.getElementById("fruitCount");
@@ -118,7 +108,8 @@ function renderFruitList(fruits) {
     listEl.innerHTML = `
       <div class="no-results">
         <span class="no-results-icon">
-        <i class="fa-solid fa-magnifying-glass"></i></span>
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
         <p>No fruits found</p>
         <small>Try a different search term</small>
       </div>`;
@@ -149,11 +140,10 @@ function renderFruitList(fruits) {
       </div>
       <div class="fruit-item-arrow"><i class="fa-solid fa-angle-right"></i></div>
     </div>
-  `,
+  `
     )
     .join("");
 
-  // Attach click and keyboard events to each fruit item
   listEl.querySelectorAll(".fruit-item").forEach((item) => {
     item.addEventListener("click", () => selectFruit(Number(item.dataset.id)));
     item.addEventListener("keydown", (e) => {
@@ -163,12 +153,8 @@ function renderFruitList(fruits) {
       }
     });
   });
-
 }
 
-/**
- * Attaches the search input event to filter the fruit list in real-time.
- */
 function attachSearchEvent() {
   const searchEl = document.getElementById("searchInput");
   searchEl.addEventListener("input", () => {
@@ -176,7 +162,6 @@ function attachSearchEvent() {
     renderFruitList(state.filteredFruits);
   });
 
-  // Clear search button
   document.getElementById("clearSearch").addEventListener("click", () => {
     searchEl.value = "";
     applyFruitSearchFilter("");
@@ -185,10 +170,6 @@ function attachSearchEvent() {
   });
 }
 
-/**
- * Applies the left-panel search filter to the fruits collection.
- * @param {string} rawQuery
- */
 function applyFruitSearchFilter(rawQuery) {
   const query = rawQuery.trim().toLowerCase().normalize("NFC");
 
@@ -204,9 +185,6 @@ function applyFruitSearchFilter(rawQuery) {
   });
 }
 
-/**
- * Shows a modal for creating a new fruit item.
- */
 function showCreateFruitModal() {
   const existing = document.getElementById("createFruitModal");
   if (existing) existing.remove();
@@ -256,7 +234,7 @@ function showCreateFruitModal() {
           </label>
           <label class="modal-field modal-field-full">
             <span>Image Path</span>
-            <input type="text" name="image" class="modal-input" placeholder="../assets/image/fruit.png">
+            <input type="text" name="image" class="modal-input" placeholder="assets/image/fruit.png">
           </label>
           <label class="modal-field modal-field-full">
             <span>Description</span>
@@ -307,7 +285,9 @@ function showCreateFruitModal() {
       category: formData.get("category").toString(),
       price: Number(formData.get("price")),
       unit: formData.get("unit").toString().trim(),
-      image: formData.get("image").toString().trim() || createFallbackImagePath(formData.get("name").toString().trim()),
+      image:
+        normalizeImagePath(formData.get("image").toString().trim()) ||
+        createFallbackImagePath(formData.get("name").toString().trim()),
       description: formData.get("description").toString().trim(),
       type: formData.get("type").toString().trim(),
       supplierName: formData.get("supplierName").toString().trim(),
@@ -332,10 +312,6 @@ function showCreateFruitModal() {
   });
 }
 
-/**
- * Shows a confirmation modal before deleting a fruit item.
- * @param {number} fruitId
- */
 function showDeleteFruitModal(fruitId) {
   const fruit = getFruitById(fruitId);
   if (!fruit) return;
@@ -408,10 +384,6 @@ function showDeleteFruitModal(fruitId) {
   document.addEventListener("keydown", escHandler);
 }
 
-/**
- * Shows a modal for editing an existing fruit item.
- * @param {number} fruitId
- */
 function showEditFruitModal(fruitId) {
   const fruit = getFruitById(fruitId);
   if (!fruit) return;
@@ -514,7 +486,7 @@ function showEditFruitModal(fruitId) {
       category: formData.get("category").toString(),
       price: Number(formData.get("price")),
       unit: formData.get("unit").toString().trim(),
-      image: formData.get("image").toString().trim(),
+      image: normalizeImagePath(formData.get("image").toString().trim()),
       description: formData.get("description").toString().trim(),
       type: formData.get("type").toString().trim(),
       supplierName: formData.get("supplierName").toString().trim(),
@@ -539,10 +511,6 @@ function showEditFruitModal(fruitId) {
   });
 }
 
-/**
- * Adds a new fruit item to state and storage.
- * @param {Object} fruit
- */
 function addFruitItem(fruit) {
   state.fruits.push(fruit);
   applyFruitSearchFilter(document.getElementById("searchInput")?.value || "");
@@ -552,11 +520,6 @@ function addFruitItem(fruit) {
   showToast("Item added successfully.", "success");
 }
 
-/**
- * Updates an existing fruit item in state and storage.
- * @param {number} fruitId
- * @param {Object} updates
- */
 function updateFruitItem(fruitId, updates) {
   const fruit = getFruitById(fruitId);
   if (!fruit) return;
@@ -578,10 +541,6 @@ function updateFruitItem(fruitId, updates) {
   showToast("Item updated successfully.", "success");
 }
 
-/**
- * Deletes a fruit item from state and storage.
- * @param {number} fruitId
- */
 function deleteFruitItem(fruitId) {
   const deletedWasSelected = state.selectedFruitId === fruitId;
 
@@ -609,44 +568,31 @@ function deleteFruitItem(fruitId) {
 // FRUIT SELECTION & DETAIL VIEW
 // ─────────────────────────────────────────────
 
-/**
- * Selects a fruit by ID and updates the detail panel.
- * @param {number} id - Fruit ID to select
- */
 function selectFruit(id) {
   state.selectedFruitId = id;
-  state.activeTab = "supplier"; // Always reset to first tab on selection
-  state.supplierEdits = {}; // Clear any unsaved edits
-  state.supplierFilter = "";    // Clear supplier filter
-  state.supplierFilterRaw = ""; // Clear supplier filter display value
+  state.activeTab = "supplier";
+  state.supplierEdits = {};
+  state.supplierFilter = "";
+  state.supplierFilterRaw = "";
 
   const fruit = getFruitById(id);
   if (!fruit) return;
 
-  // Update active styling on list items
   document.querySelectorAll(".fruit-item").forEach((item) => {
     item.classList.toggle("active", Number(item.dataset.id) === id);
   });
 
   renderDetailPanel(fruit);
 
-  // On mobile: scroll detail panel into view
   if (window.innerWidth <= 768) {
-    document
-      .getElementById("detailPanel")
-      .scrollIntoView({ behavior: "smooth" });
+    document.getElementById("detailPanel").scrollIntoView({ behavior: "smooth" });
   }
 }
 
-/**
- * Renders the full detail panel for the given fruit.
- * @param {Object} fruit - Fruit data object
- */
 function renderDetailPanel(fruit) {
   const detailEl = document.getElementById("detailPanel");
 
   detailEl.innerHTML = `
-    <!-- Header Section -->
     <div class="detail-header">
       <div class="detail-hero">
         <div class="detail-img-wrap">
@@ -669,13 +615,12 @@ function renderDetailPanel(fruit) {
       </div>
     </div>
 
-    <!-- Tabs Navigation -->
     <div class="tabs-nav" role="tablist">
       <button class="tab-btn ${state.activeTab === "supplier" ? "active" : ""}"
               data-tab="supplier" role="tab"
               aria-selected="${state.activeTab === "supplier"}">
         <span class="tab-icon">
-       <i class="fa-solid fa-align-justify"></i>
+          <i class="fa-solid fa-align-justify"></i>
         </span> Supplier Information
       </button>
       <button class="tab-btn ${state.activeTab === "moredata" ? "active" : ""}"
@@ -687,18 +632,15 @@ function renderDetailPanel(fruit) {
       </button>
     </div>
 
-    <!-- Tab Content -->
     <div class="tab-content" id="tabContent">
       ${state.activeTab === "supplier" ? renderSupplierTab(fruit) : renderMoreDataTab(fruit)}
     </div>
   `;
 
-  // Tab switching events
   detailEl.querySelectorAll(".tab-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       state.activeTab = btn.dataset.tab;
       state.supplierEdits = {};
-      // Re-render only the tabs section to avoid full refresh
       detailEl.querySelectorAll(".tab-btn").forEach((b) => {
         b.classList.toggle("active", b.dataset.tab === state.activeTab);
         b.setAttribute("aria-selected", b.dataset.tab === state.activeTab);
@@ -726,11 +668,6 @@ function renderDetailPanel(fruit) {
 // MORE DATA TAB
 // ─────────────────────────────────────────────
 
-/**
- * Renders the "More Data" tab HTML.
- * @param {Object} fruit
- * @returns {string} HTML string
- */
 function renderMoreDataTab(fruit) {
   return `
     <div class="more-data-tab">
@@ -770,13 +707,7 @@ function renderMoreDataTab(fruit) {
 // SUPPLIER INFO TAB
 // ─────────────────────────────────────────────
 
-/**
- * Renders the "Supplier Info" tab with an editable table.
- * @param {Object} fruit
- * @returns {string} HTML string
- */
 function renderSupplierTab(fruit) {
-  // Work on a merged snapshot: saved edits overlay the persisted data
   const rows = fruit.suppliers.map((sup) => {
     const edit = state.supplierEdits[sup.id];
     return edit ? { ...sup, ...edit } : { ...sup };
@@ -784,7 +715,6 @@ function renderSupplierTab(fruit) {
 
   const filteredRows = state.supplierFilter
     ? rows.filter((r) => {
-        // Normalize each field the same way as the query
         const norm = (s) => (s || "").toLowerCase().normalize("NFC");
         return (
           norm(r.supplierName).includes(state.supplierFilter) ||
@@ -798,18 +728,16 @@ function renderSupplierTab(fruit) {
 
   return `
     <div class="supplier-tab">
-      <!-- Toolbar -->
       <div class="supplier-toolbar">
-
         <div class="supplier-filter-wrap">
           <span class="filter-icon">
-             <i class="fa-solid fa-magnifying-glass"></i>
+            <i class="fa-solid fa-magnifying-glass"></i>
           </span>
           <input type="text" id="supplierFilter" dir="ltr" placeholder="Filter suppliers..."
                  class="supplier-filter-input" value="${escapeHtml(state.supplierFilterRaw)}">
           <button id="clearSearchSupplier" aria-label="Clear search">
             <i class="fa-solid fa-xmark"></i>
-          </button> 
+          </button>
         </div>
 
         <div class="supplier-actions">
@@ -820,18 +748,17 @@ function renderSupplierTab(fruit) {
           </button>
           <button class="btn btn-save" id="saveBtn">
             <span>
-                <i class="fa-solid fa-floppy-disk"></i>
+              <i class="fa-solid fa-floppy-disk"></i>
             </span> Save
           </button>
           <button class="btn btn-cancel" id="cancelBtn">
             <span>
-                <i class="fa-solid fa-times"></i>
+              <i class="fa-solid fa-times"></i>
             </span> Cancel
           </button>
         </div>
       </div>
 
-      <!-- Table -->
       <div class="table-wrapper">
         <table class="supplier-table" id="supplierTable">
           <thead>
@@ -844,10 +771,10 @@ function renderSupplierTab(fruit) {
                   ${columnLabel(col)}
                   <span class="sort-icon">${getSortIcon(col)}</span>
                 </th>
-              `,
+              `
                 )
                 .join("")}
-                <th>Actions</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -866,15 +793,9 @@ function renderSupplierTab(fruit) {
   `;
 }
 
-/**
- * Renders a single supplier table row with editable fields.
- * @param {Object} sup - Supplier row data
- * @returns {string} HTML string
- */
 function renderSupplierRow(sup) {
   const cityOptions = CITIES.map(
-    (c) =>
-      `<option value="${c}" ${c === sup.city ? "selected" : ""}>${c}</option>`,
+    (c) => `<option value="${c}" ${c === sup.city ? "selected" : ""}>${c}</option>`
   ).join("");
 
   return `
@@ -888,13 +809,12 @@ function renderSupplierRow(sup) {
                value="${sup.sinceWhen}">
       </td>
       <td>
-        <!-- City with Value Help (SAP F4-style dropdown) -->
         <div class="city-field-wrap">
           <select class="cell-input city-select" data-field="city">
             ${cityOptions}
           </select>
           <span class="f4-icon" title="Value Help (F4)">
-          <i class="fa-regular fa-square-caret-down fa-lg"></i>
+            <i class="fa-regular fa-square-caret-down fa-lg"></i>
           </span>
         </div>
       </td>
@@ -919,16 +839,10 @@ function renderSupplierRow(sup) {
 // DELETE SUPPLIER MODAL
 // ─────────────────────────────────────────────
 
-/**
- * Shows a confirmation modal before deleting a supplier.
- * @param {string} supId - Supplier ID to delete
- * @param {Object} fruit - Currently selected fruit
- */
 function showDeleteModal(supId, fruit) {
   const sup = fruit.suppliers.find((s) => s.id === supId);
   if (!sup) return;
 
-  // Remove existing modal if any
   const existing = document.getElementById("deleteModal");
   if (existing) existing.remove();
 
@@ -971,8 +885,6 @@ function showDeleteModal(supId, fruit) {
   `;
 
   document.body.appendChild(modal);
-
-  // Animate in
   requestAnimationFrame(() => modal.classList.add("modal-visible"));
 
   const closeModal = () => {
@@ -981,22 +893,24 @@ function showDeleteModal(supId, fruit) {
   };
 
   document.getElementById("modalCancelBtn").addEventListener("click", closeModal);
-  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
 
   document.getElementById("modalDeleteBtn").addEventListener("click", () => {
     deleteSupplier(supId, fruit);
     closeModal();
   });
 
-  // ESC key closes modal
-  const escHandler = (e) => { if (e.key === "Escape") { closeModal(); document.removeEventListener("keydown", escHandler); } };
+  const escHandler = (e) => {
+    if (e.key === "Escape") {
+      closeModal();
+      document.removeEventListener("keydown", escHandler);
+    }
+  };
   document.addEventListener("keydown", escHandler);
 }
 
-/**
- * Shows a modal for creating a new supplier and adding it to the current fruit.
- * @param {Object} fruit
- */
 function showCreateSupplierModal(fruit) {
   const existing = document.getElementById("createSupplierModal");
   if (existing) existing.remove();
@@ -1103,11 +1017,6 @@ function showCreateSupplierModal(fruit) {
   });
 }
 
-/**
- * Deletes a supplier from state and localStorage, then re-renders.
- * @param {string} supId
- * @param {Object} fruit
- */
 function deleteSupplier(supId, fruit) {
   const fruitInState = getFruitById(fruit.id);
   if (!fruitInState) return;
@@ -1115,18 +1024,12 @@ function deleteSupplier(supId, fruit) {
   fruitInState.suppliers = fruitInState.suppliers.filter((s) => s.id !== supId);
   saveFruitsToStorage();
 
-  // Re-render the supplier tab with updated data
   document.getElementById("tabContent").innerHTML = renderSupplierTab(fruitInState);
   attachTabEvents(fruitInState);
 
-  showToast("🗑️ Supplier deleted successfully.", "success");
+  showToast("Supplier deleted successfully.", "success");
 }
 
-/**
- * Adds a new supplier to the selected fruit and persists it immediately.
- * @param {Object} fruit
- * @param {Object} supplier
- */
 function addSupplierToFruit(fruit, supplier) {
   const fruitInState = getFruitById(fruit.id);
   if (!fruitInState) return;
@@ -1145,22 +1048,15 @@ function addSupplierToFruit(fruit, supplier) {
 // TAB EVENT BINDING
 // ─────────────────────────────────────────────
 
-/**
- * Attaches all interactive events inside tab content.
- * Must be called every time tab content is re-rendered.
- * @param {Object} fruit - Currently selected fruit
- */
 function attachTabEvents(fruit) {
   if (state.activeTab !== "supplier") return;
 
-  // ── Inline field change tracking ──
   document.querySelectorAll(".supplier-row").forEach((row) => {
     const supId = row.dataset.id;
     row.querySelectorAll(".cell-input").forEach((input) => {
       input.addEventListener("change", () => {
         if (!state.supplierEdits[supId]) state.supplierEdits[supId] = {};
         state.supplierEdits[supId][input.dataset.field] = input.value;
-        // Mark row as dirty for visual feedback
         row.classList.add("dirty");
       });
       input.addEventListener("input", () => {
@@ -1171,14 +1067,12 @@ function attachTabEvents(fruit) {
     });
   });
 
-  // ── Delete Supplier Buttons ──
   document.querySelectorAll(".btn-delete-supplier").forEach((btn) => {
     btn.addEventListener("click", () => {
       showDeleteModal(btn.dataset.id, fruit);
     });
   });
 
-  // ── Save Button ──
   document.getElementById("createSupplierBtn")?.addEventListener("click", () => {
     showCreateSupplierModal(fruit);
   });
@@ -1187,12 +1081,10 @@ function attachTabEvents(fruit) {
     saveSupplierEdits(fruit);
   });
 
-  // ── Cancel Button ──
   document.getElementById("cancelBtn")?.addEventListener("click", () => {
     cancelSupplierEdits(fruit);
   });
 
-  // ── Column Sorting ──
   document.querySelectorAll(".sortable").forEach((th) => {
     th.addEventListener("click", () => {
       const col = th.dataset.col;
@@ -1203,20 +1095,17 @@ function attachTabEvents(fruit) {
         state.sortConfig.column = col;
         state.sortConfig.direction = "asc";
       }
-      document.getElementById("tabContent").innerHTML =
-        renderSupplierTab(fruit);
+      document.getElementById("tabContent").innerHTML = renderSupplierTab(fruit);
       attachTabEvents(fruit);
     });
   });
 
-  // ── Supplier Table Filter (typing) ──
   document.getElementById("supplierFilter")?.addEventListener("input", (e) => {
-    state.supplierFilterRaw = e.target.value; // keep original for display
-    // Normalize: lowercase + NFC to fix RTL/diacritic keyboard artefacts
+    state.supplierFilterRaw = e.target.value;
     state.supplierFilter = e.target.value.trim().toLowerCase().normalize("NFC");
     document.getElementById("tabContent").innerHTML = renderSupplierTab(fruit);
     attachTabEvents(fruit);
-    // Restore focus + cursor at end after re-render
+
     const filterEl = document.getElementById("supplierFilter");
     if (filterEl) {
       filterEl.focus();
@@ -1225,7 +1114,6 @@ function attachTabEvents(fruit) {
     }
   });
 
-  // ── Clear Supplier Filter Button ──
   document.getElementById("clearSearchSupplier")?.addEventListener("click", () => {
     state.supplierFilter = "";
     state.supplierFilterRaw = "";
@@ -1239,16 +1127,10 @@ function attachTabEvents(fruit) {
 // SAVE / CANCEL LOGIC
 // ─────────────────────────────────────────────
 
-/**
- * Saves all pending supplier edits into the state and localStorage,
- * then shows a confirmation toast.
- * @param {Object} fruit
- */
 function saveSupplierEdits(fruit) {
   const fruitInState = getFruitById(fruit.id);
   if (!fruitInState) return;
 
-  // Collect current input values directly from the DOM (most reliable)
   document.querySelectorAll(".supplier-row").forEach((row) => {
     const supId = row.dataset.id;
     const sup = fruitInState.suppliers.find((s) => s.id === supId);
@@ -1262,29 +1144,20 @@ function saveSupplierEdits(fruit) {
 
   state.supplierEdits = {};
   saveFruitsToStorage();
-  showToast(`✅ Changes saved successfully!`, "success");
+  showToast("Changes saved successfully!", "success");
 }
 
-/**
- * Discards all unsaved edits and re-renders the supplier tab from saved state.
- * @param {Object} fruit
- */
 function cancelSupplierEdits(fruit) {
   state.supplierEdits = {};
   document.getElementById("tabContent").innerHTML = renderSupplierTab(fruit);
   attachTabEvents(fruit);
-  showToast(`↩ Changes discarded.`, "info");
+  showToast("Changes discarded.", "info");
 }
 
 // ─────────────────────────────────────────────
 // SORT HELPERS
 // ─────────────────────────────────────────────
 
-/**
- * Sorts supplier rows based on current sort config.
- * @param {Array} rows
- * @returns {Array} Sorted rows
- */
 function sortSupplierRows(rows) {
   if (!state.sortConfig.column) return rows;
   const { column, direction } = state.sortConfig;
@@ -1297,21 +1170,11 @@ function sortSupplierRows(rows) {
   });
 }
 
-/**
- * Returns sort direction icon for a column header.
- * @param {string} col
- * @returns {string}
- */
 function getSortIcon(col) {
   if (state.sortConfig.column !== col) return "⇅";
   return state.sortConfig.direction === "asc" ? "↑" : "↓";
 }
 
-/**
- * Returns human-readable column labels.
- * @param {string} col
- * @returns {string}
- */
 function columnLabel(col) {
   const labels = {
     supplierName: "Supplier Name",
@@ -1327,14 +1190,11 @@ function columnLabel(col) {
 // EMPTY STATE
 // ─────────────────────────────────────────────
 
-/**
- * Shows the empty/placeholder state on the right panel before a fruit is selected.
- */
 function showEmptyState() {
   document.getElementById("detailPanel").innerHTML = `
     <div class="empty-state">
       <div class="empty-state-icon">
-      <i class="fa-solid fa-apple-whole fa-2xl"></i>
+        <i class="fa-solid fa-apple-whole fa-2xl"></i>
       </div>
       <h3>Select a Fruit</h3>
       <p>Choose a fruit from the list on the left to view its details, supplier information, and more.</p>
@@ -1346,11 +1206,6 @@ function showEmptyState() {
 // TOAST NOTIFICATIONS
 // ─────────────────────────────────────────────
 
-/**
- * Shows a floating toast notification.
- * @param {string} message - Message text
- * @param {string} type - "success" | "info" | "error"
- */
 function showToast(message, type = "info") {
   const existing = document.querySelector(".toast");
   if (existing) existing.remove();
@@ -1360,7 +1215,6 @@ function showToast(message, type = "info") {
   toast.textContent = message;
   document.body.appendChild(toast);
 
-  // Trigger animation
   requestAnimationFrame(() => toast.classList.add("toast-visible"));
 
   setTimeout(() => {
@@ -1373,29 +1227,14 @@ function showToast(message, type = "info") {
 // UTILITY FUNCTIONS
 // ─────────────────────────────────────────────
 
-/**
- * Finds a fruit by ID from the current state.
- * @param {number} id
- * @returns {Object|undefined}
- */
 function getFruitById(id) {
   return state.fruits.find((f) => f.id === id);
 }
 
-/**
- * Deep clones a value using JSON serialization.
- * @param {*} obj
- * @returns {*}
- */
 function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
-/**
- * Escapes HTML special characters to prevent XSS.
- * @param {string} str
- * @returns {string}
- */
 function escapeHtml(str) {
   if (str === null || str === undefined) return "";
   return String(str)
@@ -1406,35 +1245,31 @@ function escapeHtml(str) {
     .replace(/'/g, "&#039;");
 }
 
+// ─────────────────────────────────────────────
+// BOOT HELPERS
+// ─────────────────────────────────────────────
 
-// ─────────────────────────────────────────────
-// BOOT
-// ─────────────────────────────────────────────
-/**
- * Generates a unique supplier id.
- * @returns {string}
- */
 function createSupplierId() {
   return `s${Date.now()}${Math.floor(Math.random() * 1000)}`;
 }
 
-/**
- * Generates a unique fruit id.
- * @returns {number}
- */
 function createFruitId() {
   const ids = state.fruits.map((fruit) => Number(fruit.id) || 0);
   return (ids.length ? Math.max(...ids) : 0) + 1;
 }
 
-/**
- * Generates a lightweight fallback image for new items.
- * @param {string} fruitName
- * @returns {string}
- */
 function createFallbackImagePath(fruitName) {
   const safeName = (fruitName || "Fruit").trim();
   return `https://via.placeholder.com/180x180/e8f5e9/2d6a4f?text=${encodeURIComponent(safeName[0] || "F")}`;
+}
+
+function normalizeImagePath(imagePath) {
+  if (!imagePath) return imagePath;
+  if (/^(https?:)?\/\//i.test(imagePath) || imagePath.startsWith("data:")) {
+    return imagePath;
+  }
+
+  return imagePath.replace(/^(\.\.\/)+/, "");
 }
 
 document.addEventListener("DOMContentLoaded", init);
